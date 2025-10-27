@@ -1,3 +1,5 @@
+import { SaberMas } from "./pages/SaberMas";
+
 export const initialStore = () => {
   return {
     message: null,
@@ -14,10 +16,15 @@ export const initialStore = () => {
       }
     ],
     listas: {
-      people: [{}],
-      starships: [{}],
-      planets: [{}]
-    }
+      people: [],
+      starships: [],
+      planets: []
+    },
+    saberMas: {
+      data: null,
+      tipo: null
+    },
+    favoritos: []
   }
 }
 
@@ -37,7 +44,25 @@ export default function storeReducer(store, action = {}) {
         ...store,
         listas: action.payload
       };
+    case 'set_saberMas':
+      return {
+        ...store,
+        saberMas: action.payload
+      };
+    case 'set_favoritos':
+      const like = store.favoritos.some(
+        fav => fav.uid === action.payload.uid && fav.tipo === action.payload.tipo
+      );
+      return {
+        ...store,
+        favoritos: like
+          ? store.favoritos.filter(
+            fav => !(fav.uid === action.payload.uid && fav.tipo === action.payload.tipo)
+          )
+          : [...store.favoritos, action.payload]
+      };
     default:
       throw Error('Unknown action.');
+
   }
 }
